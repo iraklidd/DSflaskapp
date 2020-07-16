@@ -1,0 +1,641 @@
+  <div id="content">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="fas fa-align-left"></i>
+                <span> &nbsp; </span>
+            </button>
+            <h3>MSSQL SERVER notes</h3>
+        </div>
+    </nav>
+
+    <h2>Basic + Notes</h2>
+
+    <div class="line"></div>
+
+    <p>
+
+<p>-- TOP all</p>
+<p>select</p>
+<p>top 10 *</p>
+<p>from&nbsp;</p>
+<p>dbo.departments -- comment</p>
+<p><br></p>
+<p>/* comments */</p>
+<p><br></p>
+<p>-- delete all rows</p>
+<p>DELETE FROM Helloworlds</p>
+<p>DELETE FROM Helloworlds WHERE amount &gt; 200</p>
+<p><br></p>
+<p>-- reset table</p>
+<p>TRUNCATE TABLE HelloWords;</p>
+<p><br></p>
+<p>-- delete completely</p>
+<p>DROP TABLE testvalue;</p>
+<p><br></p>
+<p>PRINT &#39;salamis magvarie!&#39;;</p>
+<p><br></p>
+<p>-- get db info</p>
+<p>SELECT @@VERSION</p>
+<p>SELECT @@SERVERNAME</p>
+<p>SELECT @@SERVICENAME</p>
+<p>SELECT serverproperty(&#39;ComputerNamePhysicalNetBIOS&#39;);</p>
+<p><br></p>
+<p>GO -- continue executing statements if your statement throws an error</p>
+<p><br></p>
+<p>BEGIN TRANSACTION --This is the beginning of your transaction</p>
+<p>ROLLBACK TRANSACTION --Rollback will undo your changes</p>
+<p>COMMIT TRANSACTION --Alternatively, to save your results</p>
+<p><br></p>
+<p>-- OUTPUT - last deleted or inserted&nbsp;</p>
+<p>insert into</p>
+<p>@t</p>
+<p>OUTPUT INSERTED.*</p>
+<p>values</p>
+<p>(1, &#39;aa&#39;),</p>
+<p>(2, &#39;bb&#39;),</p>
+<p>(3, &#39;cc&#39;)</p>
+<p><br></p>
+<p>-- Declare variable</p>
+<p>DECLARE @realDate AS VARCHAR(10);</p>
+<p>SET @realDate = &#39;13/09/2015&#39;;</p>
+<p><br></p>
+<p>-- converts string data type to target data type(Date or Numeric)</p>
+<p>SELECT TRY_PARSE(@realDate AS DATE USING &#39;Fr-FR&#39;);</p>
+<p><br></p>
+<p>-- TRY_CONVERT or TRY_CAST convert to data types or datetime format</p>
+<p>DECLARE @sampletext AS VARCHAR(10);</p>
+<p>SET @sampletext = &#39;123456&#39;;&nbsp;</p>
+<p>SELECT TRY_CONVERT(INT, @sampletext); -- 123456</p>
+<p><br></p>
+<p>-- The Cast() function is used to convert a data type variable or data from one data type to another data type</p>
+<p>DECLARE @A varchar(2)</p>
+<p>DECLARE @B varchar(2)</p>
+<p>set @A=&#39;25a&#39;</p>
+<p>set @B=&#39;15&#39;</p>
+<p>Select CAST(@A as int) + CAST(@B as int) as Result -- will be 40</p>
+<p><br></p>
+<p>-- today</p>
+<p>print GETDATE();</p>
+<p><br></p>
+<p>-- convert today date to varchat and to style number # 108</p>
+<p>select convert(varchar(20), GETDATE(), 108)</p>
+<p><br></p>
+<p>-- skip first 50 rows</p>
+<p>OFFSET 50 ROWS</p>
+<p><br></p>
+<p>-- &nbsp;skip first 50 rows and take next 10 rows</p>
+<p>OFFSET 50 ROWS FETCH NEXT 10 ROWS ONLY</p>
+<p><br></p>
+<p>-- same things / select as</p>
+<p>SELECT FirstName +&#39; &#39;+ LastName As FullName</p>
+<p>SELECT FullName = FirstName +&#39; &#39;+ LastName</p>
+<p>SELECT FirstName +&#39; &#39;+ LastName FullName</p>
+<p><br></p>
+<p>-- in &amp; not in</p>
+<p>select * from #outertable where i in (select i from #innertable)</p>
+<p>select * from #outertable where i not in (select i from #innertable)</p>
+<p><br></p>
+<p>-- virtual table, not physically stored</p>
+<p>declare @t table (id int, title varchar(30));</p>
+<p><br></p>
+<p>-- declare multiple variable</p>
+<p>DECLARE</p>
+<p>&nbsp;@Var1 INT = 5,</p>
+<p>&nbsp;@Var2 NVARCHAR(50) = &#39;Hello World&#39;,</p>
+<p>&nbsp;@Var3 DATETIME = GETDATE()</p>
+<p><br></p>
+<p>-- operations += -= *= /= ...</p>
+<p>SET @test += 1;</p>
+<p><br></p>
+<p>-- format date</p>
+<p>DECLARE @Date DATETIME = &#39;2016-09-05 00:01:02.333&#39;</p>
+<p>SELECT FORMAT(@Date, N&#39;dddd, MMMM dd, yyyy hh:mm:ss tt&#39;)</p>
+<p><br></p>
+<p>-- create SNAPSHOT backup</p>
+<p>use testcompany</p>
+<p><br></p>
+<p>CREATE DATABASE AdventureWorks_snap042007 ON</p>
+<p><br></p>
+<p>( NAME = testcompany, FILENAME = &#39;D:\g drive\Data Science\SQL\????\db\snapshot\AdventureWorks_data_042007.ss&#39; )</p>
+<p><br></p>
+<p>AS SNAPSHOT OF testcompany</p>
+<p>-- restore</p>
+<p>RESTORE DATABASE testcompany FROM DATABASE_SNAPSHOT=&#39;AdventureWorks_snap042007&#39;;</p>
+<p>-- delete snapshot</p>
+<p>DROP DATABASE AdventureWorks_snap042007</p>
+<p><br></p>
+<p>-- get a comma delimited string from multiple rows</p>
+<p>BEGIN</p>
+<p>&nbsp;--Table variable declaration to store sample records</p>
+<p>&nbsp;DECLARE @Table TABLE (FirstName varchar(256), LastName varchar(256))</p>
+<p>&nbsp;--Inserting sample records into table variable @Table</p>
+<p>&nbsp;INSERT INTO @Table (FirstName, LastName)</p>
+<p>&nbsp;VALUES</p>
+<p>&nbsp;(&#39;John&#39;,&#39;Smith&#39;),</p>
+<p>&nbsp;(&#39;Serber&#39;,&#39;Smith&#39;),</p>
+<p>&nbsp;(&#39;Tamaz&#39;,&#39;Doe&#39;)</p>
+<p>&nbsp;--Creating variable to store result</p>
+<p>&nbsp;DECLARE @Names varchar(4000)</p>
+<p>&nbsp;--Used COLESCE function, so it will concatenate comma separated FirstName into @Names varible</p>
+<p>&nbsp;SELECT @Names = COALESCE(@Names + &#39;, &#39;, &#39;&#39;) + FirstName + &#39;Y&#39;</p>
+<p>&nbsp;FROM @Table</p>
+<p>&nbsp;--Now selecting actual result</p>
+<p>&nbsp;SELECT @Names</p>
+<p>&nbsp;END</p>
+<p><br></p>
+<p>-- get first not null from a list</p>
+<p>SELECT COALESCE(NULL, NULL, 1, 2, 3, NULL, 4); -- Result: 1</p>
+<p>-- select first not null column</p>
+<p>SELECT</p>
+<p>&nbsp;UserID,</p>
+<p>&nbsp;COALESCE(PhoneNumber, CellNumber)</p>
+<p>FROM</p>
+<p>&nbsp;@Table</p>
+<p><br></p>
+<p>-- if whith begin - end</p>
+<p>IF 3 = 3</p>
+<p>BEGIN</p>
+<p>&nbsp;PRINT &#39;Great!&#39;;</p>
+<p>END</p>
+<p>ELSE -- or else if</p>
+<p>BEGIN</p>
+<p>&nbsp;PRINT &#39;unbelievable&#39;;</p>
+<p>END</p>
+<p><br></p>
+<p>-- case</p>
+<p>SELECT CASE DATEPART(WEEKDAY, GETDATE())</p>
+<p>&nbsp;WHEN 1 THEN &#39;Sunday&#39;</p>
+<p>&nbsp;WHEN 2 THEN &#39;Monday&#39;</p>
+<p>&nbsp;WHEN 3 THEN &#39;Tuesday&#39;</p>
+<p>&nbsp;WHEN 4 THEN &#39;Wednesday&#39;</p>
+<p>&nbsp;WHEN 5 THEN &#39;Thursday&#39;</p>
+<p>&nbsp;WHEN 6 THEN &#39;Friday&#39;</p>
+<p>&nbsp;WHEN 7 THEN &#39;Saturday&#39;</p>
+<p>END</p>
+<p>-- case with ..</p>
+<p>WHEN LEFT(@FirstName, 1) IN (&#39;a&#39;,&#39;e&#39;,&#39;i&#39;,&#39;o&#39;,&#39;u&#39;)</p>
+<p>&nbsp;THEN &#39;First name starts with a vowel&#39;</p>
+<p><br></p>
+<p>-- insert selected rows</p>
+<p>INSERT INTO USERS (FIRST_NAME, LAST_NAME)</p>
+<p>SELECT &#39;James&#39;, &#39;Bond&#39; UNION ALL</p>
+<p>SELECT &#39;Miss&#39;, &#39;Moneypenny&#39; UNION ALL</p>
+<p>SELECT &#39;Raoul&#39;, &#39;Silva&#39;</p>
+<p><br></p>
+<p>-- merge two tables</p>
+<p>MERGE sales.category t --target</p>
+<p>&nbsp; &nbsp; USING sales.category_staging s --source</p>
+<p>ON (s.category_id = t.category_id)</p>
+<p>WHEN MATCHED -- or when matched AND (s.category_id &gt; 10)</p>
+<p>&nbsp; &nbsp; THEN UPDATE SET&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; t.category_name = s.category_name,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; t.amount = s.amount</p>
+<p>WHEN NOT MATCHED BY TARGET&nbsp;</p>
+<p>&nbsp; &nbsp; THEN INSERT (category_id, category_name, amount)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;VALUES (s.category_id, s.category_name, s.amount)</p>
+<p>WHEN NOT MATCHED BY SOURCE&nbsp;</p>
+<p>&nbsp; &nbsp; THEN DELETE;</p>
+<p><br></p>
+<p>-- check exists and create</p>
+<p>IF OBJECT_id(N&#39;dbo.Product&#39;,N&#39;U&#39;) IS NOT NULL</p>
+<p>DROP TABLE dbo.Product</p>
+<p>GO</p>
+<p>CREATE TABLE dbo.Product (</p>
+<p>ProductID INT PRIMARY KEY,</p>
+<p>ProductName NVARCHAR(64),</p>
+<p>PRICE MONEY</p>
+<p>)</p>
+<p><br></p>
+<p>-- CTE source WITH</p>
+<p>WITH ctetable (cte_id, cte_city)</p>
+<p>AS</p>
+<p>(SELECT id,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; cities</p>
+<p>&nbsp;FROM &nbsp; dbo.testcities)</p>
+<p>SELECT cte_id,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;cte_city</p>
+<p>FROM &nbsp; ctetable</p>
+<p><br></p>
+<p>-- create view</p>
+<p>CREATE VIEW view_cities</p>
+<p>AS</p>
+<p>&nbsp;SELECT id, cities FROM dbo.testcities</p>
+<p><br></p>
+<p>-- EXISTS, NOT EXISTS</p>
+<p>declare @t1 table (id int, title varchar(30));</p>
+<p>declare @t2 table (id int, t1id varchar(30), title varchar(30));</p>
+<p><br></p>
+<p>INSERT INTO @t1 (id, title)</p>
+<p>values</p>
+<p>(&#39;1&#39;, &#39;abc&#39;),</p>
+<p>(&#39;2&#39;, &#39;def&#39;),</p>
+<p>(&#39;3&#39;, &#39;ghi&#39;);</p>
+<p><br></p>
+<p>INSERT INTO @t2 (id, t1id, title)</p>
+<p>values</p>
+<p>(&#39;1&#39;, 1, &#39;name&#39;),</p>
+<p>(&#39;2&#39;, 1, &#39;name2&#39;);</p>
+<p><br></p>
+<p>-- exist are checking every @t1 rows in all @t2</p>
+<p>select</p>
+<p>*</p>
+<p>from</p>
+<p>@t1</p>
+<p>where exists (SELECT * FROM @t2 where [@t2].t1id=[@t1].id) -- we have access on @t2 columns from here</p>
+<p><br></p>
+<p>-- union will remove identical rows, union all - not&nbsp;</p>
+<p><br></p>
+<p>-- if try is error -&gt; catch</p>
+<p>BEGIN TRY</p>
+<p>&nbsp;select 1/0;</p>
+<p>END TRY</p>
+<p>BEGIN CATCH</p>
+<p>&nbsp;print &#39;vinavat&#39;;</p>
+<p>END CATCH</p>
+<p><br></p>
+<p>-- THROW ????</p>
+<p><br></p>
+<p>-- while loop</p>
+<p>DECLARE @i int = 0;</p>
+<p>WHILE(@i &lt; 100)</p>
+<p>BEGIN</p>
+<p>&nbsp;PRINT @i;</p>
+<p>&nbsp;SET @i = @i+1</p>
+<p>END</p>
+<p><br></p>
+<p>-- Cumulative SUM - OVER</p>
+<p>SELECT</p>
+<p>-- cumulative with inout and after order by innout &gt; order by id</p>
+<p>&nbsp;SUM(dbo.testmovement.cities_id) OVER(PARTITION BY inout ORDER BY id) AS SalesTotal</p>
+<p>FROM</p>
+<p>dbo.testmovement</p>
+<p>-- ROWS BETWEEN UNBOUNDED PRECEDING ???</p>
+<p><br></p>
+<p><br></p>
+<p>-- Aggregation functions with OVER (function like multiple group by)</p>
+<p>SELECT</p>
+<p>*,</p>
+<p>&nbsp;min(dbo.testmovement.cities_id) OVER(PARTITION BY inout) AS minsale,</p>
+<p>&nbsp;max(dbo.testmovement.cities_id) OVER(PARTITION BY inout) AS maxsale</p>
+<p>FROM</p>
+<p>dbo.testmovement</p>
+<p><br></p>
+<p>-- function ntile - every exam (partition) splits to ntile buckets, with order by value desc&nbsp;</p>
+<p>declare @values table(Id int identity(1,1) primary key, [Value] float, ExamId int)</p>
+<p>insert into @values ([Value], ExamId) values</p>
+<p>(65, 1), (40, 1), (99, 1), (100, 1), (90, 1), -- Exam 1 Scores</p>
+<p>(91, 2), (88, 2), (83, 2), (91, 2), (78, 2), (67, 2), (77, 2) -- Exam 2 Scores</p>
+<p><br></p>
+<p>select ExamId,</p>
+<p>&nbsp;ntile(2) over (partition by ExamId order by [Value] desc) as Quartile,</p>
+<p>&nbsp;Value, Id</p>
+<p>from @values</p>
+<p>order by Quartile, value desc</p>
+<p><br></p>
+<p>-- order by and incrument numbering (if difference) in selected partition</p>
+<p>SELECT</p>
+<p>RANK () OVER (&nbsp;</p>
+<p><span style="white-space:pre;">&nbsp; &nbsp;&nbsp;</span>PARTITION BY brand_id</p>
+<p><span style="white-space:pre;">&nbsp; &nbsp;&nbsp;</span>ORDER BY list_price DESC</p>
+<p>) price_rank&nbsp;</p>
+<p>...</p>
+<p><br></p>
+<p>-- RANK() DENSE_RANK() ROW_NUMBER()</p>
+<p>Author Title CreationDate &nbsp; RANK DENSE_RANK ROW_NUMBER</p>
+<p>Author 1 Book 1 22/07/2016 &nbsp; 1 1 1</p>
+<p>Author 1 Book 2 22/07/2016 &nbsp; 1 1 2</p>
+<p>Author 1 Book 3 21/07/2016 &nbsp; 3 2 3</p>
+<p>Author 1 Book 4 21/07/2016 &nbsp; 3 2 4</p>
+<p>Author 1 Book 5 21/07/2016 &nbsp; 3 2 5</p>
+<p>Author 1 Book 6 04/07/2016 &nbsp; 6 3 6</p>
+<p>Author 2 Book 7 04/07/2016 &nbsp; 1 1 1</p>
+<p><br></p>
+<p>-- rollup &amp; cube - on group by</p>
+<p>Item Color Quantity</p>
+<p>Table Blue 124</p>
+<p>Table Red 223</p>
+<p>Chair Blue 101</p>
+<p>Chair Red 210</p>
+<p>--</p>
+<p>SELECT CASE WHEN (GROUPING(Item) = 1) THEN &#39;ALL&#39;</p>
+<p>&nbsp;ELSE ISNULL(Item, &#39;UNKNOWN&#39;)</p>
+<p>&nbsp;END AS Item,</p>
+<p>&nbsp;CASE WHEN (GROUPING(Color) = 1) THEN &#39;ALL&#39; -- when group by with rollup -&gt; =1 otherwise -&gt; =0</p>
+<p>&nbsp;ELSE ISNULL(Color, &#39;UNKNOWN&#39;)</p>
+<p>&nbsp;END AS Color,</p>
+<p>&nbsp;SUM(Quantity) AS QtySum</p>
+<p>FROM Inventory</p>
+<p>GROUP BY Item, Color WITH ROLLUP</p>
+<p>--</p>
+<p>Item Color QtySum</p>
+<p>------------------</p>
+<p>Chair Blue 101.00</p>
+<p>Chair Red 210.00</p>
+<p>Chair ALL 311.00</p>
+<p>Table Blue 124.00</p>
+<p>Table Red 223.00</p>
+<p>Table ALL 347.00</p>
+<p>ALL ALL 658.00</p>
+<p>-- CUBE result is the same, except these twoadditional rows are returned at the end:</p>
+<p>ALL Blue 225.00&nbsp;</p>
+<p>ALL Red 433.00</p>
+<p><br></p>
+<p>-- XML</p>
+<p>SELECT &#39;Hello World&#39; FOR XML PATH(&#39;example&#39;)</p>
+<p><br></p>
+<p>-- APPLY (cross, outer ...)SELECT A.author_name, B.id, B.book_name, B.price</p>
+<p>-- apply is like a join, but works with fucntions (fnGetBooksByAuthorId)</p>
+<p>SELECT A.author_name, B.id, B.book_name, B.price</p>
+<p>FROM Author A</p>
+<p>CROSS APPLY fnGetBooksByAuthorId(A.Id) B</p>
+<p>-- we dont need statement &quot;ON&quot;</p>
+<p><br></p>
+<p>-- Computed Columns</p>
+<p>Create table NetProfit</p>
+<p>(</p>
+<p>&nbsp;SalaryToEmployee int,</p>
+<p>&nbsp;BonusDistributed int,</p>
+<p>&nbsp;BusinessRunningCost int,</p>
+<p>&nbsp;BusinessMaintenanceCost int,</p>
+<p>&nbsp;BusinessEarnings int,</p>
+<p>&nbsp;-- this is computed column</p>
+<p>&nbsp;BusinessNetIncome</p>
+<p>&nbsp;As BusinessEarnings - (SalaryToEmployee +</p>
+<p>&nbsp;BonusDistributed +</p>
+<p>&nbsp;BusinessRunningCost +</p>
+<p>&nbsp;BusinessMaintenanceCost )</p>
+<p>)</p>
+<p><br></p>
+<p>-- delete duplicate rows using CTE</p>
+<p>WITH EmployeesCTE AS</p>
+<p>(</p>
+<p>&nbsp;SELECT *, ROW_NUMBER()OVER(PARTITION BY ID ORDER BY ID) AS RowNumber</p>
+<p>&nbsp;FROM Employees</p>
+<p>)</p>
+<p>DELETE FROM EmployeesCTE WHERE RowNumber &gt; 1</p>
+<p><br></p>
+<p>-- copy data from one table to another</p>
+<p>INSERT INTO MyTargetTable (Column1, Column2, Column3)</p>
+<p>SELECT Column1, Column2, Column3 FROM MySourceTable;</p>
+<p><br></p>
+<p>--STUFF function inserts a string into another string</p>
+<p>SELECT STUFF(&#39;SQL Tutorial!&#39;, 13, 1, &#39; is fun!&#39;); -- result &quot;SQL Tutorial is fun!&quot;</p>
+<p><br></p>
+<p><br></p>
+<p>-- string operations</p>
+<p>SELECT QUOTENAME(&#39;what&#39;&#39;s my name?&#39;, &#39;[&#39;) &nbsp;-- text to -&gt; Quotename, also ({,[,(,&lt; or &gt;,),],})&nbsp;</p>
+<p>SELECT REPLACE(&#39;This is my string&#39;, &#39;is&#39;, &#39;XX&#39;) -- Returns &#39;ThXX XX my string&#39;.</p>
+<p>SELECT SUBSTRING(&#39;This is my string&#39;, 6, 5) -- returns &#39;is my&#39;</p>
+<p>SELECT value FROM STRING_SPLIT(&#39;Lorem ipsum dolor sit amet.&#39;, &#39; &#39;);</p>
+<p>SELECT LEFT(&#39;This is my string&#39;, 4) -- result: &#39;This&#39;</p>
+<p>SELECT RIGHT(&#39;This is my string&#39;, 6) -- returns &#39;string&#39;</p>
+<p>SELECT LEN(&#39;W3Schools.com&#39;);</p>
+<p>-- Format() primarily used for converting date-time types to strings</p>
+<p>SELECT LTRIM(&#39; This is my string&#39;) -- Returns &#39;This is my string&#39;</p>
+<p>SELECT RTRIM(&#39;This is my string &#39;) -- Returns &#39;This is my string&#39;</p>
+<p>SELECT PATINDEX(&#39;%ter%&#39;, &#39;interesting&#39;) -- Returns 3.</p>
+<p>SELECT PATINDEX(&#39;ter%&#39;, &#39;interesting&#39;) -- Returns 0, since &#39;ter&#39; is not at the start.</p>
+<p>SELECT PATINDEX(&#39;%t_r%t%&#39;, &#39;interesting&#39;) -- Returns 3.</p>
+<p>SELECT SPACE(3) -- Returns &#39; &#39; (a string containing 3 spaces)</p>
+<p>SELECT REPLICATE(&#39;a&#39;, 5) -- Returns &#39;aaaaa&#39;</p>
+<p>SELECT LOWER(&#39;This IS my STRING&#39;) -- Returns &#39;this is my string&#39;</p>
+<p>SELECT UPPER(&#39;This IS my STRING&#39;) -- Returns &#39;THIS IS MY STRING&#39;</p>
+<p>Select REVERSE(&#39;Sql Server&#39;) -- Returns &#39;revreS lqS&#39;</p>
+<p>SELECT CHOOSE (3, &#39;apples&#39;, &#39;pears&#39;, &#39;oranges&#39;, &#39;bananas&#39;) AS chosen_result</p>
+<p><br></p>
+<p>-- aggregation column</p>
+<p>select string_agg(studentname, &#39;,&#39;) from -- column returns with seperately &#39;,&#39;</p>
+<p>yourstudent</p>
+<p>group by</p>
+<p>subjectid</p>
+<p><br></p>
+<p>-- calculate a 6-month (126-business-day) centered moving average of a price</p>
+<p>SELECT TradeDate, AVG(Px) OVER (ORDER BY TradeDate ROWS BETWEEN 63 PRECEDING AND 63 FOLLOWING) AS</p>
+<p>PxMovingAverage</p>
+<p>FROM HistoricalPrices</p>
+<p><br></p>
+<p>-- PIVOT / UNPIVOT</p>
+<p>CREATE TABLE tbl_stock(item NVARCHAR(10), weekday NVARCHAR(10), price INT);</p>
+<p>INSERT INTO tbl_stock VALUES</p>
+<p>(&#39;Item1&#39;, &#39;Mon&#39;, 110), (&#39;Item2&#39;, &#39;Mon&#39;, 230), (&#39;Item3&#39;, &#39;Mon&#39;, 150),</p>
+<p>(&#39;Item1&#39;, &#39;Tue&#39;, 115), (&#39;Item2&#39;, &#39;Tue&#39;, 231), (&#39;Item3&#39;, &#39;Tue&#39;, 162),</p>
+<p>(&#39;Item1&#39;, &#39;Wed&#39;, 110), (&#39;Item2&#39;, &#39;Wed&#39;, 240), (&#39;Item3&#39;, &#39;Wed&#39;, 162),</p>
+<p>(&#39;Item1&#39;, &#39;Thu&#39;, 109), (&#39;Item2&#39;, &#39;Thu&#39;, 228), (&#39;Item3&#39;, &#39;Thu&#39;, 145),</p>
+<p>(&#39;Item1&#39;, &#39;Fri&#39;, 120), (&#39;Item2&#39;, &#39;Fri&#39;, 210), (&#39;Item3&#39;, &#39;Fri&#39;, 125),</p>
+<p>(&#39;Item1&#39;, &#39;Mon&#39;, 122), (&#39;Item2&#39;, &#39;Mon&#39;, 225), (&#39;Item3&#39;, &#39;Mon&#39;, 140),</p>
+<p>(&#39;Item1&#39;, &#39;Tue&#39;, 110), (&#39;Item2&#39;, &#39;Tue&#39;, 235), (&#39;Item3&#39;, &#39;Tue&#39;, 154),</p>
+<p>(&#39;Item1&#39;, &#39;Wed&#39;, 125), (&#39;Item2&#39;, &#39;Wed&#39;, 220), (&#39;Item3&#39;, &#39;Wed&#39;, 142);</p>
+<p><br></p>
+<p>-- pivot</p>
+<p>SELECT * FROM tbl_stock</p>
+<p>PIVOT (</p>
+<p>&nbsp;AVG(price) FOR weekday IN ([Mon], [Tue], [Wed], [Thu], [Fri])</p>
+<p>) pvt;</p>
+<p><br></p>
+<p>-- unpivot</p>
+<p>SELECT * FROM tbl_stock</p>
+<p>PIVOT (</p>
+<p>&nbsp;AVG(price) FOR weekday IN ([Mon], [Tue], [Wed], [Thu], [Fri])</p>
+<p>) pvt</p>
+<p>UNPIVOT (</p>
+<p>&nbsp;price FOR weekday IN ([Mon], [Tue], [Wed], [Thu], [Fri])</p>
+<p>) unpvt;</p>
+<p><br></p>
+<p>-- lag (add column with 2 rows down)</p>
+<p>SELECT</p>
+<p>item,</p>
+<p>weekday,</p>
+<p>price,</p>
+<p>LAG(price,2) OVER ( -- every difference &#39;item&#39; will stat count 2 rows down - again</p>
+<p><span style="white-space:pre;">&nbsp; &nbsp;&nbsp;</span>PARTITION BY item -- without partition by every rows will be down with 2 rows</p>
+<p><span style="white-space:pre;">&nbsp; &nbsp;&nbsp;</span>ORDER BY item</p>
+<p>) pricel</p>
+<p>FROM tbl_stock</p>
+<p><br></p>
+<p>-- select distinc item and price</p>
+<p>SELECT DISTINCT</p>
+<p>ITEM,</p>
+<p>price</p>
+<p>FROM tbl_stock</p>
+<p><br></p>
+<p>-- FUNCTIONS</p>
+<p><br></p>
+<p>-- create function</p>
+<p>CREATE FUNCTION dbo.StripWWWandCom (@input VARCHAR(250))</p>
+<p>RETURNS VARCHAR(250)</p>
+<p>AS BEGIN</p>
+<p>&nbsp; &nbsp; DECLARE @Work VARCHAR(250)</p>
+<p><br></p>
+<p>&nbsp; &nbsp; SET @Work = @Input</p>
+<p><br></p>
+<p>&nbsp; &nbsp; SET @Work = REPLACE(@Work, &#39;www.&#39;, &#39;&#39;)</p>
+<p>&nbsp; &nbsp; SET @Work = REPLACE(@Work, &#39;.com&#39;, &#39;&#39;)</p>
+<p><br></p>
+<p>&nbsp; &nbsp; RETURN @work</p>
+<p>END</p>
+<p><br></p>
+<p>-- call function</p>
+<p>SELECT dbo.StripWWWandCom (&#39;www.yahoo.com&#39;) -- or column name</p>
+<p>-- FROM dbo.table .....</p>
+<p>-- modifying a scalar function</p>
+<p>ALTER FUNCTION [schema_name.]function_name (parameter_list)</p>
+<p>-- removing a scalar function</p>
+<p>DROP FUNCTION [schema_name.]function_name;</p>
+<p><br></p>
+<p>-- Procedures</p>
+<p>-- it does not return a value like a function, it can return a success/failure status</p>
+<p>-- Function allows only SELECT statement, procedures cannot use in queries.</p>
+<p>CREATE PROCEDURE P_getbyweekday</p>
+<p>(</p>
+<p>&nbsp;@wkname VARCHAR(128) = NULL --Input parameter {Mon Tue Wed Thu Fri} NULL default</p>
+<p>)</p>
+<p>AS</p>
+<p>BEGIN</p>
+<p>&nbsp;SELECT item + &#39; is from &#39;</p>
+<p>&nbsp;FROM tbl_stock</p>
+<p>&nbsp;WHERE weekday = @wkname</p>
+<p>END</p>
+<p>-- execute procedure</p>
+<p>exec P_getbyweekday &#39;Mon&#39; -- or exec P_getbyweekday @wkname = &#39;Mon&#39;</p>
+<p><br></p>
+<p>-- simple looping</p>
+<p>CREATE PROCEDURE P_Simple_Loop</p>
+<p>(</p>
+<p>&nbsp;@SayThis VARCHAR(30),</p>
+<p>&nbsp;@ThisManyTimes INT</p>
+<p>)</p>
+<p>AS</p>
+<p>BEGIN</p>
+<p>&nbsp;WHILE @ThisManyTimes &gt; 0</p>
+<p>&nbsp;BEGIN</p>
+<p>&nbsp;PRINT @SayThis;</p>
+<p>&nbsp;SET @ThisManyTimes = @ThisManyTimes - 1;</p>
+<p>&nbsp;END</p>
+<p><br></p>
+<p>&nbsp;RETURN; -- ??? and OUTPUT ???</p>
+<p>END</p>
+<p>GO</p>
+<p>-- execute</p>
+<p>exec P_Simple_Loop &#39;shavi zgvis magvarie&#39;, 3</p>
+<p><br></p>
+<p>-- generate primary key create table</p>
+<p>id uniqueIdentifier default (newId()) primary key</p>
+<p><br></p>
+<p>-- create sequence (for counter by step)</p>
+<p>CREATE SEQUENCE [dbo].[CustomersSeq]</p>
+<p>AS INT</p>
+<p>START WITH 10001</p>
+<p>INCREMENT BY 1</p>
+<p>MINVALUE -1;</p>
+<p>-- increase or just call function</p>
+<p>SELECT NEXT VALUE FOR [dbo].[CustomersSeq]</p>
+<p><br></p>
+<p>-- full text search in details ?</p>
+<p><br></p>
+<p>-- Trigger</p>
+<p>-- All the examples below will add records to tblAudit whenever a record is added, deleted or updated in tblSomething.</p>
+<p>CREATE TRIGGER tblSomething_InsertOrUpdate ON tblSomething</p>
+<p>FOR INSERT</p>
+<p>AS</p>
+<p>&nbsp;INSERT INTO tblAudit (TableName, RecordId, Action)</p>
+<p>&nbsp;SELECT &#39;tblSomething&#39;, Id, &#39;Inserted&#39;</p>
+<p>&nbsp;FROM Inserted</p>
+<p>GO</p>
+<p>CREATE TRIGGER tblSomething_InsertOrUpdate ON tblSomething</p>
+<p>FOR UPDATE</p>
+<p>AS</p>
+<p>&nbsp;INSERT INTO tblAudit (TableName, RecordId, Action)</p>
+<p>&nbsp;SELECT &#39;tblSomething&#39;, Id, &#39;Updated&#39;</p>
+<p>&nbsp;FROM Inserted</p>
+<p>GO</p>
+<p>CREATE TRIGGER tblSomething_InsertOrUpdate ON tblSomething</p>
+<p>FOR DELETE</p>
+<p>AS</p>
+<p>&nbsp;INSERT INTO tblAudit (TableName, RecordId, Action)</p>
+<p>&nbsp;SELECT &#39;tblSomething&#39;, Id, &#39;Deleted&#39;</p>
+<p>&nbsp;FROM Deleted</p>
+<p>GO</p>
+<p>-- same</p>
+<p>CREATE TRIGGER tblSomething_InsertOrUpdate ON tbl_stock</p>
+<p>FOR INSERT</p>
+<p>AS</p>
+<p>&nbsp;INSERT INTO tbl_stock</p>
+<p>&nbsp;values (&#39;i&#39;, &#39;b&#39;, &#39;100&#39;)</p>
+<p><br></p>
+<p>-- cursor</p>
+<p>-- cursor vs update recommend a cursor to spread that load out over a period of time</p>
+<p>DECLARE @test_table TABLE</p>
+<p>(</p>
+<p>&nbsp;Id INT,</p>
+<p>&nbsp;Val VARCHAR(100)</p>
+<p>);</p>
+<p>INSERT INTO @test_table(Id, Val)</p>
+<p>VALUES</p>
+<p>&nbsp;(1, &#39;Foo&#39;),</p>
+<p>&nbsp;(2, &#39;Bar&#39;),</p>
+<p>&nbsp;(3, &#39;Baz&#39;);</p>
+<p>/* Test data prepared */</p>
+<p>/* Iterator variable @myId, for example sake */</p>
+<p><br></p>
+<p>DECLARE @myId INT;</p>
+<p>/* Cursor to iterate rows and assign values to variables */</p>
+<p>DECLARE myCursor CURSOR FOR</p>
+<p>&nbsp;SELECT Id</p>
+<p>&nbsp;FROM @test_table;</p>
+<p>/* Start iterating rows */</p>
+<p>OPEN myCursor;</p>
+<p>FETCH NEXT FROM myCursor INTO @myId;</p>
+<p>/* @@FETCH_STATUS global variable will be 1 / true until there are no more rows to fetch */</p>
+<p>WHILE @@FETCH_STATUS = 0</p>
+<p>BEGIN</p>
+<p>&nbsp;/* Write operations to perform in a loop here. Simple SELECT used for example */</p>
+<p>&nbsp;SELECT Id, Val</p>
+<p>&nbsp;FROM @test_table</p>
+<p>&nbsp;WHERE Id = @myId;</p>
+<p>&nbsp;/* Set variable(s) to the next value returned from iterator; this is needed otherwise the</p>
+<p>cursor will loop infinitely. */</p>
+<p>&nbsp;FETCH NEXT FROM myCursor INTO @myId;</p>
+<p>END</p>
+<p>/* After all is done, clean up */</p>
+<p>CLOSE myCursor;</p>
+<p>DEALLOCATE myCursor;</p>
+<p><br></p>
+<p>-- paging in Various Versions of SQL Server</p>
+<p>DECLARE @RowsPerPage INT = 10, @PageNumber INT = 4</p>
+<p>SELECT OrderId, ProductId</p>
+<p>FROM OrderDetail</p>
+<p>ORDER BY OrderId</p>
+<p>OFFSET (@PageNumber - 1) * @RowsPerPage ROWS</p>
+<p>FETCH NEXT @RowsPerPage ROWS ONLY</p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+
+
+    </p>
+
+
+
+  </div>

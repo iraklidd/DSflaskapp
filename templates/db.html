@@ -1,0 +1,38 @@
+<div class="wrapper">
+
+  <!-- Sidebar -->
+  <nav id="sidebar">
+      <div class="sidebar-header">
+          <h3>DB Connect</h3>
+          <strong>psql</strong>
+      </div>
+
+      <ul class="list-unstyled components">
+          <p>ds.a9b8c0.xyz</p>
+          <li class="active">
+              <a href="/db">MSSQL</a>
+          </li>
+          <li class="active">
+              <a href="/psql">PosgreSQL queries</a>
+          </li>
+          <li class="active">
+              <a href="#">MongoDB</a>
+          </li>
+      </ul>
+  </nav>
+
+
+
+
+  {% if subcontent=='mssql' %}
+      {% include 'db_mssql.html' %}
+  {% elif subcontent=='psql' %}
+      {% extends "db_psql.html" %}
+  {% endif %}
+
+
+
+
+
+
+

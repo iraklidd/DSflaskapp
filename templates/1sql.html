@@ -1,0 +1,57 @@
+<h2>PostgreSQL report 'employees'</h2>
+<p>SELECT * FROM public.employees ORDER BY employee_id ASC;</p>
+<div class="line"></div>
+
+<table id="example" class="display nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>employee_id</th>
+                <th>first_name</th>
+                <th>last_name</th>
+                <th>email</th>
+                <th>phone_number</th>
+                <th>hire_date</th>
+                <th>job_id</th>
+                <th>salary</th>
+                <th>commission_pct</th>
+                <th>manager_id</th>
+                <th>department_id</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in employeesresult %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+                <td>{{row[2]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+                <td>{{row[5]}}</td>
+                <td>{{row[6]}}</td>
+                <td>{{row[7]}}</td>
+                <td>{{row[8]}}</td>
+                <td>{{row[9]}}</td>
+                <td>{{row[10]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>employee_id</th>
+                <th>first_name</th>
+                <th>last_name</th>
+                <th>email</th>
+                <th>phone_number</th>
+                <th>hire_date</th>
+                <th>job_id</th>
+                <th>salary</th>
+                <th>commission_pct</th>
+                <th>manager_id</th>
+                <th>department_id</th>
+            </tr>
+        </tfoot>
+</table>
+
+<p align="right"><b>technology:</b> flask, datatables</p>
+
+<div class="line"></div>
